@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -14,6 +15,21 @@ class OrderController extends Controller
             'items.*.quantity'  => ['required', 'integer', 'min:1'],
         ]);
 
-       dd($validated);
+        //store order.
+
+        //store order items.
+
+        //check order items (product) ingredients.
+
+        //calculate ingredient consumption for the ordered quantity
+
+        // update stock
+
+        // update stock_transaction
+
+
+        Order::create([$validated]);
     }
+
+
 }
