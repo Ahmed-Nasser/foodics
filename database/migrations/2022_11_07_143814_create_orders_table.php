@@ -15,8 +15,7 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('reference_number')->unique();
-            $table->enum('status', ['preparing', 'delivered']);
+            $table->enum('status', ['in-progress', 'completed'])->default('in-progress');
             $table->timestamps();
         });
     }

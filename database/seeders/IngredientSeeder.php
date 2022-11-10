@@ -14,6 +14,19 @@ class IngredientSeeder extends Seeder
      */
     public function run()
     {
-        Ingredient::factory()->count(3)->create();
+        $ingredientNames = [
+            'beef',
+            'chicken',
+            'red-sauce',
+            'white-sauce',
+            'cheese',
+            'onion',
+            'flour',
+            'bacon'
+        ];
+        foreach ($ingredientNames as $ingredientName) {
+            Ingredient::factory()->create(['name' => $ingredientName]);
+        }
+
     }
 }

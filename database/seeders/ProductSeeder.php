@@ -14,6 +14,17 @@ class ProductSeeder extends Seeder
      */
     public function run()
     {
-        Product::factory()->count(2)->create();
+        $productNames = [
+            'mexican-burger-Large',
+            'mexican-burger-medium',
+            'mexican-burger-small',
+            'ranch-pizza-large',
+            'ranch-pizza-medium',
+            'ranch-pizza-small',
+        ];
+
+        foreach ($productNames as $productName) {
+            Product::factory()->create(['name' => $productName]);
+        }
     }
 }
