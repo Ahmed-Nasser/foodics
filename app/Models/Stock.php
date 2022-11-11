@@ -3,13 +3,13 @@
 namespace App\Models;
 
 use Database\Factories\StockFactory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Stock extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
 
     public $incrementing = false;
 
@@ -23,13 +23,5 @@ class Stock extends Model
     protected static function newFactory(): StockFactory
     {
         return StockFactory::new();
-    }
-
-    protected static function boot()
-    {
-        parent::boot();
-        static::creating(function ($model) {
-            $model->id = Str::uuid()->toString();
-        });
     }
 }
