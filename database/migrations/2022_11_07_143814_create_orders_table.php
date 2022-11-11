@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->uuid('id')->primary();
-
+            $table->enum('status', ['in-progress', 'completed'])->default('in-progress');
             $table->timestamps();
         });
     }

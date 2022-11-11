@@ -3,28 +3,26 @@
 namespace App\Models;
 
 use Database\Factories\OrderFactory;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
 
 class Order extends Model
 {
     use HasFactory;
 
-    public $incrementing = false;
+    use HasUuids;
 
-    protected $keyType = 'string';
+    protected $fillable = ['status'];
 
     protected static function newFactory(): OrderFactory
     {
         return OrderFactory::new();
     }
 
-    protected static function boot()
+    public function products(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        parent::boot();
-        static::creating(function ($model) {
-            $model->id = Str::uuid()->toString();
-        });
+        return $this->belongsToMany(Product::class, 'product_order');
     }
+
 }
