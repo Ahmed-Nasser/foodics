@@ -33,24 +33,12 @@ class OrderController extends Controller
 
         //calculate ingredient consumption for the ordered quantity
         $orderIngredients = $this->calculateOrderIngredients($validated['products'], $productIngredients);
-        $stockIngredient = $this->getIngredientStock($orderIngredients);
+        $stockIngredients = $this->getIngredientStock($orderIngredients);
 
         // update stock
-        $stockIngredient->map(function ($stock) use($orderIngredients){
-            if(key_exists($stock->ingredient_id, $orderIngredients)){
-                $new_amount = ($stock->ingredient_amount) - ($orderIngredients[$stock->ingredient_id]);
-                DB::table('stocks')
-                    ->where('ingredient_id', $stock->ingredient_id)
-                    ->update([
-                    'ingredient_amount' => $new_amount,
-                ]);
-            }
-        });
+        $this->updateIngredientStock($stockIngredients, $orderIngredients);
 
-        dd($stockIngredient);
-
-        // update stock_transaction
-
+        //TODO:: update stock_transaction
     }
 
     private function prepareProductQuantity(array $products): array
@@ -89,6 +77,23 @@ class OrderController extends Controller
         });
 
         return $orderIngredients;
+    }
+
+    private function updateIngredientStock(\Illuminate\Support\Collection $stockIngredients, array $orderIngredients): bool
+    {
+        $stockIngredients->map(function ($stock) use ($orderIngredients){
+            if(key_exists($stock->ingredient_id, $orderIngredients)){
+                $new_amount = ($stock->ingredient_amount) - ($orderIngredients[$stock->ingredient_id]);
+                DB::table('stocks')
+                    ->where('ingredient_id', $stock->ingredient_id)
+                    ->update([
+                        'ingredient_amount' => $new_amount,
+                    ]);
+            }
+        });
+
+        return true;
+
     }
 
 
