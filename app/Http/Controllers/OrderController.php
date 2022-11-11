@@ -36,9 +36,20 @@ class OrderController extends Controller
         $stockIngredient = $this->getIngredientStock($orderIngredients);
 
         // update stock
-       $this->updateIngredientStock($stockIngredient, $orderIngredients);
+        $stockIngredient->map(function ($stock) use($orderIngredients){
+            if(key_exists($stock->ingredient_id, $orderIngredients)){
+                $new_amount = ($stock->ingredient_amount) - ($orderIngredients[$stock->ingredient_id]);
+                DB::table('stocks')
+                    ->where('ingredient_id', $stock->ingredient_id)
+                    ->update([
+                    'ingredient_amount' => $new_amount,
+                ]);
+            }
+        });
 
-        //TODO::update stock_transaction
+        dd($stockIngredient);
+
+        // update stock_transaction
 
     }
 
@@ -78,21 +89,6 @@ class OrderController extends Controller
         });
 
         return $orderIngredients;
-    }
-
-    private function updateIngredientStock(\Illuminate\Support\Collection $stockIngredient, array $orderIngredients): bool
-    {
-        $stockIngredient->map(function ($stock) use ($orderIngredients){
-            if(key_exists($stock->ingredient_id, $orderIngredients)){
-                $new_amount = ($stock->ingredient_amount) - ($orderIngredients[$stock->ingredient_id]);
-                DB::table('stocks')
-                    ->where('ingredient_id', $stock->ingredient_id)
-                    ->update([
-                        'ingredient_amount' => $new_amount,
-                    ]);
-            }
-        });
-        return true;
     }
 
 
