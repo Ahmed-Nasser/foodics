@@ -20,5 +20,6 @@ storage/debugbar/
 storage/api-docs/
 storage/media/
 storage/media/*
+storage/logs/*
 /.run/
 .php-cs-fixer.cache
