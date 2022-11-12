@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Models\Stock;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -24,6 +25,8 @@ class StockObserver
         } else{
             $this->updateTransactionStock($stock, $stockTransaction->first());
         }
+
+        $this->checkStockStatus($stock);
     }
 
     private function updateTransactionStock(Stock $stock, $stockTransaction): void
@@ -54,7 +57,7 @@ class StockObserver
         return DB::table('transaction_stock')->where('stock_id', $stockId)->get();
     }
 
-    private  function storeTransactionStockIfNotExist(Stock $stock): void
+    private function storeTransactionStockIfNotExist(Stock $stock): void
     {
         DB::table('transaction_stock')->insert(
             [
@@ -68,5 +71,14 @@ class StockObserver
 
     }
 
+    private function checkStockStatus(Stock $stock): void
+    {
+        $percentage = $stock->ingredient_amount * 0.5;
+        dd(['percentage' => $percentage, 'stock-ingredient-amount' => $stock->ingredient_amount]);
+        if($stock->ingredient_amount <= $percentage){
+            Log::info('please send an email..', ['percentage' => $percentage, 'stock-ingredient-amount' => $stock->ingredient_amount]);
+        }
+
+    }
 
 }

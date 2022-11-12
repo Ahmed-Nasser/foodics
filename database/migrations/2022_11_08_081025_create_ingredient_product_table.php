@@ -17,7 +17,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->uuid('product_id');
             $table->uuid('ingredient_id');
-            $table->integer('ingredient_amount');
+            $table->double('ingredient_amount');
 
             $table->foreign('product_id')->references('id')->on('products')->cascadeOnDelete();
             $table->foreign('ingredient_id')->references('id')->on('ingredients')->cascadeOnDelete();
