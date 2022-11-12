@@ -60,9 +60,9 @@ class StockObserver
             [
                 'id' => Str::uuid()->toString(),
                 'stock_id' => $stock->id,
-                'type' => 'credit',
-                'consumed_amount' => 0,
-                'old_amount' => $stock->ingredient_amount,
+                'type' => 'debit',
+                'consumed_amount' => $stock->getOriginal('ingredient_amount') - $stock->ingredient_amount,
+                'old_amount' => $stock->getOriginal('ingredient_amount'),
             ]
         );
 
