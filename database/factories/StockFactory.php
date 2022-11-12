@@ -15,10 +15,13 @@ class StockFactory extends Factory
      */
     public function definition(): array
     {
+        $amount = $this->faker->numerify();
+
         return [
             'id' => Str::uuid()->toString(),
             'ingredient_id' => fn () => Ingredient::factory()->create()->id,
-            'ingredient_amount' => $this->faker->numerify(),
+            'ingredient_amount' => $amount,
+            'initial_ingredient_amount' => $amount,
         ];
     }
 }

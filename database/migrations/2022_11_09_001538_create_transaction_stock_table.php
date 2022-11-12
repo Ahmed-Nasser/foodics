@@ -17,8 +17,10 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->uuid('stock_id');
             $table->enum('type', ['debit', 'credit']);
-            $table->integer('consumed_amount');
-            $table->integer('old_amount');
+            $table->double('consumed_amount');
+            $table->double('old_amount');
+
+            $table->foreign('stock_id')->references('id')->on('stocks');
             $table->timestamps();
         });
     }

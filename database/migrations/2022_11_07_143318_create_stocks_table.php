@@ -16,7 +16,8 @@ return new class extends Migration
         Schema::create('stocks', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('ingredient_id');
-            $table->integer('ingredient_amount');
+            $table->double('ingredient_amount');
+            $table->double('initial_ingredient_amount');
 
             $table->foreign('ingredient_id')->references('id')->on('ingredients')->cascadeOnDelete();
             $table->timestamps();

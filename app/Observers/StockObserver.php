@@ -3,10 +3,10 @@
 namespace App\Observers;
 
 use App\Models\Stock;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class StockObserver
 {
@@ -26,7 +26,7 @@ class StockObserver
             $this->updateTransactionStock($stock, $stockTransaction->first());
         }
 
-        Log::debug($stock->toJson()."\r\n".$stockTransaction->toJson());
+        $this->checkStockStatus($stock);
     }
 
     private function updateTransactionStock(Stock $stock, $stockTransaction): void
@@ -36,8 +36,8 @@ class StockObserver
                 'id' => $stockTransaction->id,
                 'stock_id' => $stock->id,
                 'type' => 'debit',
-                'consumed_amount' => $stockTransaction->old_amount - $stock->ingredient_amount,
-                'old_amount' => 0,
+                'consumed_amount' =>  $stock->getOriginal('ingredient_amount') - $stock->ingredient_amount,
+                'old_amount' => $stock->getOriginal('ingredient_amount'),
             ],
 
             ['stock_id' => $stock->id, 'id' => $stockTransaction->id],
@@ -46,8 +46,8 @@ class StockObserver
                 'id' => $stockTransaction->id,
                 'stock_id' => $stock->id,
                 'type' => 'debit',
-                'consumed_amount' => $stockTransaction->old_amount - $stock->ingredient_amount,
-                'old_amount' => 0,
+                'consumed_amount' => $stock->getOriginal('ingredient_amount') - $stock->ingredient_amount,
+                'old_amount' => $stock->getOriginal('ingredient_amount'),
             ]
         );
     }
@@ -57,19 +57,28 @@ class StockObserver
         return DB::table('transaction_stock')->where('stock_id', $stockId)->get();
     }
 
-    private  function storeTransactionStockIfNotExist(Stock $stock): void
+    private function storeTransactionStockIfNotExist(Stock $stock): void
     {
         DB::table('transaction_stock')->insert(
             [
                 'id' => Str::uuid()->toString(),
                 'stock_id' => $stock->id,
-                'type' => 'credit',
-                'consumed_amount' => 0,
-                'old_amount' => $stock->ingredient_amount,
+                'type' => 'debit',
+                'consumed_amount' => $stock->getOriginal('ingredient_amount') - $stock->ingredient_amount,
+                'old_amount' => $stock->getOriginal('ingredient_amount'),
             ]
         );
 
     }
 
+    private function checkStockStatus(Stock $stock): void
+    {
+        $percentage = $stock->ingredient_amount * 0.5;
+        dd(['percentage' => $percentage, 'stock-ingredient-amount' => $stock->ingredient_amount]);
+        if($stock->ingredient_amount <= $percentage){
+            Log::info('please send an email..', ['percentage' => $percentage, 'stock-ingredient-amount' => $stock->ingredient_amount]);
+        }
+
+    }
 
 }
