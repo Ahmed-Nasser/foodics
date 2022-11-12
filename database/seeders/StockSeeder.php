@@ -6,6 +6,7 @@ use App\Models\Ingredient;
 use App\Models\Stock;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 
 class StockSeeder extends Seeder
 {
@@ -17,10 +18,14 @@ class StockSeeder extends Seeder
     public function run()
     {
         $ingredients = Ingredient::all()->pluck('id')->toArray();
+
         foreach ($ingredients as $ingredient){
+            $amount = Arr::random([300, 250, 200, 150, 100, 50]);
+            Log::info($amount);
             Stock::factory()->create([
                 'ingredient_id' => $ingredient,
-                'ingredient_amount' => Arr::random([100, 150, 200, 50, 25, 10, 70, 60])
+                'ingredient_amount' => $amount,
+                'initial_ingredient_amount' => $amount,
             ]);
         }
     }

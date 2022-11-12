@@ -13,12 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('orders', function (Blueprint $table) {
+        Schema::create('merchants', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('merchant_id');
-            $table->enum('status', ['in-progress', 'completed'])->default('in-progress');
+            $table->string('name');
+            $table->string('address');
 
-            $table->foreign('merchant_id')->references('id')->on('merchants');
             $table->timestamps();
         });
     }
@@ -30,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('orders');
+        Schema::dropIfExists('merchants');
     }
 };
