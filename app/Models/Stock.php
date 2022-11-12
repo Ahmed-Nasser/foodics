@@ -28,9 +28,6 @@ class Stock extends Model
     protected static function boot()
     {
         parent::boot();
-        self::updated(function ($model){
-
-        });
     }
 
     protected static function newFactory(): StockFactory

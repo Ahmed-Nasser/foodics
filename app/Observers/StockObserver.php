@@ -6,7 +6,6 @@ use App\Models\Stock;
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class StockObserver
 {
@@ -25,8 +24,6 @@ class StockObserver
         } else{
             $this->updateTransactionStock($stock, $stockTransaction->first());
         }
-
-        Log::debug($stock->toJson()."\r\n".$stockTransaction->toJson());
     }
 
     private function updateTransactionStock(Stock $stock, $stockTransaction): void
@@ -36,8 +33,8 @@ class StockObserver
                 'id' => $stockTransaction->id,
                 'stock_id' => $stock->id,
                 'type' => 'debit',
-                'consumed_amount' => $stockTransaction->old_amount - $stock->ingredient_amount,
-                'old_amount' => 0,
+                'consumed_amount' =>  $stock->getOriginal('ingredient_amount') - $stock->ingredient_amount,
+                'old_amount' => $stock->getOriginal('ingredient_amount'),
             ],
 
             ['stock_id' => $stock->id, 'id' => $stockTransaction->id],
@@ -46,8 +43,8 @@ class StockObserver
                 'id' => $stockTransaction->id,
                 'stock_id' => $stock->id,
                 'type' => 'debit',
-                'consumed_amount' => $stockTransaction->old_amount - $stock->ingredient_amount,
-                'old_amount' => 0,
+                'consumed_amount' => $stock->getOriginal('ingredient_amount') - $stock->ingredient_amount,
+                'old_amount' => $stock->getOriginal('ingredient_amount'),
             ]
         );
     }
