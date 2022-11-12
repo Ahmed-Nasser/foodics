@@ -73,10 +73,10 @@ class StockObserver
 
     private function checkStockStatus(Stock $stock): void
     {
-        $percentage = $stock->ingredient_amount * 0.5;
-        dd(['percentage' => $percentage, 'stock-ingredient-amount' => $stock->ingredient_amount]);
-        if($stock->ingredient_amount <= $percentage){
-            Log::info('please send an email..', ['percentage' => $percentage, 'stock-ingredient-amount' => $stock->ingredient_amount]);
+        $percentage = $stock->initial_ingredient_amount * 0.5;
+
+        if($percentage <= $stock->ingredient_amount){
+            Log::info('please send an email..');
         }
 
     }

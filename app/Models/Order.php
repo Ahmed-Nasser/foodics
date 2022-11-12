@@ -16,11 +16,19 @@ class Order extends Model
 
     protected $keyType = 'string';
 
-    protected $fillable = ['status'];
+    protected $fillable = ['status', 'merchant_id'];
 
     protected static function newFactory(): OrderFactory
     {
         return OrderFactory::new();
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+        self::creating(function ($model){
+            $model->merchant_id = "5616c9e6-6233-11ed-8cb2-d4d252eedae0";
+        });
     }
 
     public function products(): BelongsToMany
