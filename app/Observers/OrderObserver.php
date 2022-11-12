@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Models\Order;
+use App\Models\Stock;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -20,7 +21,8 @@ class OrderObserver
     public function created(Order $order): void
     {
         $orderIngredients = $this->calculateOrderIngredients($order);
-        $this->updateIngredientStock($this->getIngredientStock($orderIngredients), $orderIngredients);
+        $ingredientStock = $this->getIngredientStock($orderIngredients);
+        $this->updateIngredientStock($ingredientStock, $orderIngredients);
     }
 
     private function calculateOrderIngredients(Order $order): array
@@ -40,21 +42,16 @@ class OrderObserver
 
     private function getIngredientStock(array $ingredients): Collection
     {
-        return DB::table('stocks')
-            ->select('ingredient_amount', 'ingredient_id')
+        return Stock::select('ingredient_amount', 'ingredient_id')
             ->whereIn('ingredient_id', array_keys($ingredients))->get();
     }
 
-    private function updateIngredientStock(Collection $stockIngredients, array $orderIngredients): void
+    private function updateIngredientStock(Collection $ingredientStock, array $orderIngredients): void
     {
-        $stockIngredients->map(function ($stock) use ($orderIngredients){
+        $ingredientStock->map(function ($stock) use ($orderIngredients){
             if(key_exists($stock->ingredient_id, $orderIngredients)){
                 $newAmount = ($stock->ingredient_amount) - ($orderIngredients[$stock->ingredient_id]);
-                DB::table('stocks')
-                    ->where('ingredient_id', $stock->ingredient_id)
-                    ->update([
-                        'ingredient_amount' => $newAmount,
-                    ]);
+                Stock::find($stock->ingredient_id)->update(['ingredient_amount' => $newAmount]);
             }
         });
 
