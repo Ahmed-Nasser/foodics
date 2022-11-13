@@ -5,10 +5,8 @@ namespace App\Models;
 use Database\Factories\StockFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Stock extends Model
 {
@@ -23,12 +21,9 @@ class Stock extends Model
     protected $fillable = [
         'ingredient_id',
         'ingredient_amount',
+        'initial_ingredient_amount',
+        'notifiable'
     ];
-
-    protected static function boot()
-    {
-        parent::boot();
-    }
 
     protected static function newFactory(): StockFactory
     {

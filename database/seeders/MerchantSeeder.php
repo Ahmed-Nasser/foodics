@@ -20,6 +20,7 @@ class MerchantSeeder extends Seeder
                 'id'      => '5616c9e6-6233-11ed-8cb2-d4d252eedae0',
                 'address' => fake()->address,
                 'name'    => fake()->name,
+                'email'   => fake()->email,
             ]
         );
     }
