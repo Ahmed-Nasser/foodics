@@ -18,6 +18,7 @@ return new class extends Migration
             $table->uuid('ingredient_id');
             $table->double('ingredient_amount');
             $table->double('initial_ingredient_amount');
+            $table->boolean('notified')->default(0);
 
             $table->foreign('ingredient_id')->references('id')->on('ingredients')->cascadeOnDelete();
             $table->timestamps();

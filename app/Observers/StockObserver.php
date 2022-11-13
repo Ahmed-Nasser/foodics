@@ -20,66 +20,29 @@ class StockObserver
      */
     public function updated(Stock $stock): void
     {
-        $stockTransaction = $this->getTransactionStock($stock->id);
-
-        if (count($stockTransaction) == 0){
-            $this->storeTransactionStockIfNotExist($stock);
-        } else{
-            $this->updateTransactionStock($stock, $stockTransaction->first());
+        DB::beginTransaction();
+        try {
+            $this->updateTransactionStock($stock);
+            $this->checkStockStatus($stock);
+            DB::commit();
+        }catch (\Exception $exception){
+            DB::rollBack();
+            throw $exception;
         }
-
-        $this->checkStockStatus($stock);
-    }
-
-    private function updateTransactionStock(Stock $stock, $stockTransaction): void
-    {
-        DB::table('transaction_stock')->upsert(
-            [
-                'id' => $stockTransaction->id,
-                'stock_id' => $stock->id,
-                'type' => 'debit',
-                'consumed_amount' =>  $stock->getOriginal('ingredient_amount') - $stock->ingredient_amount,
-                'old_amount' => $stock->getOriginal('ingredient_amount'),
-            ],
-
-            ['stock_id' => $stock->id, 'id' => $stockTransaction->id],
-
-            [
-                'id' => $stockTransaction->id,
-                'stock_id' => $stock->id,
-                'type' => 'debit',
-                'consumed_amount' => $stock->getOriginal('ingredient_amount') - $stock->ingredient_amount,
-                'old_amount' => $stock->getOriginal('ingredient_amount'),
-            ]
-        );
-    }
-
-    private function getTransactionStock(string $stockId): Collection
-    {
-        return DB::table('transaction_stock')->where('stock_id', $stockId)->get();
-    }
-
-    private function storeTransactionStockIfNotExist(Stock $stock): void
-    {
-        DB::table('transaction_stock')->insert(
-            [
-                'id' => Str::uuid()->toString(),
-                'stock_id' => $stock->id,
-                'type' => 'debit',
-                'consumed_amount' => $stock->getOriginal('ingredient_amount') - $stock->ingredient_amount,
-                'old_amount' => $stock->getOriginal('ingredient_amount'),
-            ]
-        );
 
     }
 
     private function checkStockStatus(Stock $stock): void
     {
         $percentage = $stock->initial_ingredient_amount * 0.5;
-        if($stock->ingredient_amount <= $percentage){
+        if($stock->ingredient_amount <= $percentage && $stock->notified == 0){
             $ingredient = $this->getIngredient($stock->ingredient_id);
             dispatch(new SendEmailJob($ingredient));
+            $this->updateNotifiedStock($stock, 1);
             Log::info('Email has been sent....');
+        } elseif (($stock->ingredient_amount == $stock->initial_ingredient_amount) && $stock->notified == 1){
+            //Stock ingredient has been credited
+            $this->updateNotifiedStock($stock, 0);
         }
 
     }
@@ -88,4 +51,21 @@ class StockObserver
         return Ingredient::find($ingredientId);
     }
 
+    private function updateNotifiedStock(Stock $stock, bool $notified): void
+    {
+        $stock::where('id', $stock->id)->update(['notified' => $notified]);
+    }
+
+    private function updateTransactionStock(Stock $stock): void
+    {
+        DB::table('transaction_stock')
+            ->where('stock_id', $stock->id)
+            ->update(
+            [
+                'type' => 'debit',
+                'consumed_amount' =>  $stock->getOriginal('ingredient_amount') - $stock->ingredient_amount,
+                'old_amount' => $stock->getOriginal('ingredient_amount'),
+            ]
+        );
+    }
 }
