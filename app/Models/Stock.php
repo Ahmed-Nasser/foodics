@@ -25,11 +25,6 @@ class Stock extends Model
         'notifiable'
     ];
 
-    protected static function boot()
-    {
-        parent::boot();
-    }
-
     protected static function newFactory(): StockFactory
     {
         return StockFactory::new();

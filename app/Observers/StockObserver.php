@@ -6,8 +6,6 @@ use App\Jobs\SendEmailJob;
 use App\Models\Ingredient;
 use App\Models\Stock;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class StockObserver
