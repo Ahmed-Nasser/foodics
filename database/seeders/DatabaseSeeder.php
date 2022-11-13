@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             IngredientSeeder::class,
             StockSeeder::class,
             IngredientProductSeeder::class,
+            TransactionStockSeeder::class,
         ]);
     }
 }
