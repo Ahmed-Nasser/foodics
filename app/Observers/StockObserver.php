@@ -2,6 +2,8 @@
 
 namespace App\Observers;
 
+use App\Jobs\SendEmailJob;
+use App\Models\Ingredient;
 use App\Models\Stock;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -74,11 +76,16 @@ class StockObserver
     private function checkStockStatus(Stock $stock): void
     {
         $percentage = $stock->initial_ingredient_amount * 0.5;
-
-        if($percentage <= $stock->ingredient_amount){
-            Log::info('please send an email..');
+        if($stock->ingredient_amount <= $percentage){
+            $ingredient = $this->getIngredient($stock->ingredient_id);
+            dispatch(new SendEmailJob($ingredient));
+            Log::info('Email has been sent....');
         }
 
+    }
+
+    private function getIngredient(string $ingredientId){
+        return Ingredient::find($ingredientId);
     }
 
 }
