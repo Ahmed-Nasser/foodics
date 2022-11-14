@@ -19,7 +19,7 @@ class TransactionStockSeeder extends Seeder
         $stocks = Stock::all();
         foreach ($stocks as $stock){
             DB::table('transaction_stock')->insert([
-               'id' => Str::uuid()->toString(),
+                'id' => Str::uuid()->toString(),
                 'stock_id' => $stock->id,
                 'type' => 'credit',
                 'consumed_amount' => 0,
