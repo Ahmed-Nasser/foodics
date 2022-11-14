@@ -10,6 +10,8 @@ class IngredientProduct extends Pivot
 {
     use HasFactory, HasUuids;
 
+    public $timestamps = false;
+
     public $incrementing = false;
 
     protected $keyType = 'string';

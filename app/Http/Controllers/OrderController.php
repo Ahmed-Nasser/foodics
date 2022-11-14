@@ -19,7 +19,7 @@ class OrderController extends Controller
     {
         // Validate request payload.
         $validated = $request->all();
-dd($validated);
+
         //store order.
         $order = $this->orderService->createOrder($validated);
 
