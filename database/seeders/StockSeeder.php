@@ -21,7 +21,6 @@ class StockSeeder extends Seeder
 
         foreach ($ingredients as $ingredient){
             $amount = Arr::random([300, 250, 200, 150, 100, 50]);
-            Log::info($amount);
             Stock::factory()->create([
                 'ingredient_id' => $ingredient,
                 'ingredient_amount' => $amount,
