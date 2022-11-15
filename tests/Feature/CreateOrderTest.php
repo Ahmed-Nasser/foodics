@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use Carbon\Carbon;
 use Tests\TestCase;
 use App\Models\Order;
 use App\Models\Stock;
@@ -112,11 +113,13 @@ class CreateOrderTest extends TestCase
                     'ingredient_id' => $ingredient->ingredient_id,
                 ])->each(function ($stock){
                     DB::table('transaction_stock')->insert([
-                        'id' => Str::uuid()->toString(),
-                        'stock_id' => $stock->id,
-                        'type' => 'credit',
+                        'id'              => Str::uuid()->toString(),
+                        'stock_id'        => $stock->id,
+                        'type'            => 'credit',
                         'consumed_amount' => 0,
-                        'old_amount' => $stock->initial_ingredient_amount
+                        'old_amount'      => $stock->initial_ingredient_amount,
+                        'created_at'      => Carbon::now(),
+                        'updated_at'      => Carbon::now(),
                     ]);
                 });
             }

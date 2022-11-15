@@ -29,7 +29,6 @@ class OrderService
                 DB::commit();
 
                 return true;
-            //TODO:: update stock_transaction, make an observer to update stock transaction.
         } catch (\Exception $exception){
             DB::rollBack();
             throw $exception;
