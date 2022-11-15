@@ -2,19 +2,19 @@
 
 namespace Tests\Feature;
 
-use Database\Seeders\MerchantSeeder;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use Tests\TestCase;
 use App\Models\Order;
 use App\Models\Stock;
 use App\Models\Product;
 use App\Models\Ingredient;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use App\Models\IngredientProduct;
+use Illuminate\Support\Facades\DB;
+use Database\Seeders\MerchantSeeder;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
-class OrderTest extends TestCase
+class CreateOrderTest extends TestCase
 {
     use DatabaseTransactions;
     /**
