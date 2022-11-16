@@ -17,15 +17,13 @@ class OrderController extends Controller
 
     public function store(StoreOrderRequest $request): JsonResponse
     {
-        // Validate request payload.
         $validated = $request->all();
 
-        //store order.
         $order = $this->orderService->createOrder($validated);
 
         return ($order)
-            ? response()->json(['message' => 'The order has been created successfully.!'])
-            : response()->json(['message' => 'The order cannot be created.!']);
+            ? $this->successResponse([], 'The order has been created successfully')
+            : $this->errorResponse(401, 'The order cannot be created');
 
     }
 

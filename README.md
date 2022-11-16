@@ -28,3 +28,5 @@
     php artisan migrate
     php artisan queue:listen    
 ```
+
+* Storage, Framework and Cache directory permission
