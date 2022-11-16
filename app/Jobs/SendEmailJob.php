@@ -34,6 +34,6 @@ class SendEmailJob implements ShouldQueue
     public function handle(): void
     {
         $email = new IngredientAmountAlert($this->ingredient);
-        Mail::to('ahmeda.eid175@gmail.com')->send($email);
+        Mail::to('please add a registered email on mailgun OR configured Receipt mailgun')->send($email);
     }
 }

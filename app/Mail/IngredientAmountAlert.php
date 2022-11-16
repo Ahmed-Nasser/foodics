@@ -34,7 +34,7 @@ class IngredientAmountAlert extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            from: new Address('ahmedeid175@gmail.com', 'Ahmed Abdelnaser'),
+            from: new Address('please add a registered email on mailgun', 'Foodics'),
             subject: 'Ingredient Amount Alert',
         );
     }
