@@ -22,7 +22,7 @@ class StockObserver
     {
         DB::beginTransaction();
         try {
-            $this->updateTransactionStock($stock);
+            $this->addTransactionStock($stock);
             $this->checkStockStatus($stock);
             DB::commit();
         }catch (\Exception $exception){
@@ -53,7 +53,7 @@ class StockObserver
         $stock::where('id', $stock->id)->update(['notified' => $notified]);
     }
 
-    private function updateTransactionStock(Stock $stock): void
+    private function addTransactionStock(Stock $stock): void
     {
         DB::table('transaction_stock')
             ->where('stock_id', $stock->id)
